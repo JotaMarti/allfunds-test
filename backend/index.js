@@ -3,6 +3,7 @@ const { MongoClient, ObjectId } = require("mongodb");
 const mockData = require("./mock_data");
 const constants = require("./constants");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 
 // Global constants
 const PORT = process.env.PORT || 3050;
@@ -14,6 +15,7 @@ const collectionName = constants.collectionName;
 const app = express();
 const mongoClient = new MongoClient(mongoDbUri);
 app.use(bodyParser.json());
+app.use(cors());
 
 // To insert mock data for testing porpuses just remove the comment of the insertMockData function
 
@@ -30,25 +32,25 @@ app.get("/v1/get-all-news", async function (req, res) {
 
 //Endpoint archive new
 app.put("/v1/archive-new", async function (req, res) {
-  const id = req.body.id
-  const date = req.body.date
+  console.log(req.body);
+  const id = req.body.id;
+  const date = req.body.date;
   const updateResult = await archiveNew(id, date);
-  if(updateResult) {
-    res.status(200).send()
+  if (updateResult) {
+    res.status(200).send();
   }
   res.status(500).send();
 });
 
-//Delete new
-app.delete("/v1/delete-new", async function (req, res) {
-  const id = req.body.id
-  const deleteResult = await deleteNew(id)
-  if(deleteResult) {
+//Endpoint Delete new
+app.delete("/v1/delete-new/:id", async function (req, res) {
+  const { id } = req.params;
+  const deleteResult = await deleteNew(id);
+  if (deleteResult) {
     res.status(200).send();
   }
   res.status(404).send();
 });
-
 
 const getAllNews = async () => {
   try {
@@ -69,42 +71,42 @@ const getAllNews = async () => {
 };
 
 const archiveNew = async (id, date) => {
-    try {
-        await mongoClient.connect();
-        const database = mongoClient.db(databaseName);
-        const newsCollection = database.collection(collectionName);
-        const query = { _id: ObjectId(id) };
-        const updateDocument = {
-          $set: {
-            archiveDate: new Date(2022, 1, 2, 3, 4),
-          },
-        };
-        const result = await newsCollection.updateOne(query, updateDocument)
-        return result.acknowledged
-    } catch (error) {
-        console.log("error")
-    } finally {
-        await mongoClient.close();
-    }
+  try {
+    await mongoClient.connect();
+    const database = mongoClient.db(databaseName);
+    const newsCollection = database.collection(collectionName);
+    const query = { _id: ObjectId(id) };
+    const updateDocument = {
+      $set: {
+        archiveDate: new Date(2022, 1, 2, 3, 4),
+      },
+    };
+    const result = await newsCollection.updateOne(query, updateDocument);
+    return result.acknowledged;
+  } catch (error) {
+    console.log("error");
+  } finally {
+    await mongoClient.close();
+  }
 };
 
 const deleteNew = async (id) => {
-    try {
-        await mongoClient.connect();
-        const database = mongoClient.db(databaseName);
-        const newsCollection = database.collection(collectionName);
-        const query = { _id: ObjectId(id) };
-        const result = await newsCollection.deleteOne(query);
-        if (result.deletedCount === 1) {
-          return true
-        }
-        return false
-    } catch (error) {
-        console.log("Error deleting document")
-    } finally {
-        await mongoClient.close();
+  try {
+    await mongoClient.connect();
+    const database = mongoClient.db(databaseName);
+    const newsCollection = database.collection(collectionName);
+    const query = { _id: ObjectId(id) };
+    const result = await newsCollection.deleteOne(query);
+    if (result.deletedCount === 1) {
+      return true;
     }
-}
+    return false;
+  } catch (error) {
+    console.log("Error deleting document");
+  } finally {
+    await mongoClient.close();
+  }
+};
 
 const insertMockData = async () => {
   try {

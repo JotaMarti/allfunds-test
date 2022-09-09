@@ -1,6 +1,6 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Alert, Button, Col, Container, Row } from "react-bootstrap";
 import NewComponent from "./components/NewComponent";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -10,6 +10,7 @@ const BASE_URL = "http://127.0.0.1:3050/v1";
 function App() {
   const [allNews, setAllNews] = useState(null);
   const [appState, setAppState] = useState("new");
+  const [getAllNewsError, setGetAllNewsError] = useState(false)
 
   const getAllNews = () => {
     axios.get(BASE_URL + "/get-all-news").then((response) => {
@@ -26,7 +27,10 @@ function App() {
         archivedNews
       };
       setAllNews(newState);
-    });
+    }).catch(error => {
+      setGetAllNewsError(true);
+    }
+    );
   };
 
   const serializeNews = (newsFromBackend) => {
@@ -100,7 +104,7 @@ function App() {
             <Button onClick={() => setAppState("archive")}>ARCHIVED</Button>
           </Col>
         </Row>
-        {allNews && appState === "new"
+        {appState === "new"
           ? allNews &&
             allNews.news.map((newInformation) => {
               return (
@@ -125,6 +129,7 @@ function App() {
                 ></NewComponent>
               );
             })}
+        {getAllNewsError && <Alert variant="danger">Can't connect to database</Alert>}
       </Container>
     </div>
   );

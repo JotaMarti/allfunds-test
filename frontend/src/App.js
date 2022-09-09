@@ -9,6 +9,8 @@ const BASE_URL = "http://127.0.0.1:3050/v1";
 const archivedDateDefaultYear = 9000;
 
 function App() {
+
+  // AllNews has this structure: {news: [], archivedNews: []}
   const [allNews, setAllNews] = useState(null);
   const [appState, setAppState] = useState("new");
   const [getAllNewsError, setGetAllNewsError] = useState(false)
@@ -37,14 +39,13 @@ function App() {
   };
 
   const serializeNews = (newsFromBackend) => {
-    const serializedNews = [];
-    newsFromBackend.map((newObject) => {
+    const serializedNews = newsFromBackend.map((newObject) => {
       const tempNew = {
         ...newObject,
         date: new Date(newObject.date),
         archiveDate: new Date(newObject.archiveDate),
       };
-      serializedNews.push(tempNew);
+      return tempNew;
     });
     return serializedNews;
   };

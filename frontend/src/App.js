@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 const BASE_URL = "http://127.0.0.1:3050/v1";
+const archivedDateDefaultYear = 9000;
 
 function App() {
   const [allNews, setAllNews] = useState(null);
@@ -17,10 +18,12 @@ function App() {
       const newsFromBackend = response.data;
       const serializedNews = serializeNews(newsFromBackend);
       const news = serializedNews.filter((newInformation) => {
-        return newInformation.archiveDate.getFullYear() > 9000;
+        const archivedDateYear = newInformation.archiveDate.getFullYear();
+        return archivedDateYear > archivedDateDefaultYear;
       });
       const archivedNews = serializedNews.filter((newInformation) => {
-        return newInformation.archiveDate.getFullYear() < 9000;
+        const archivedDateYear = newInformation.archiveDate.getFullYear();
+        return archivedDateYear < archivedDateDefaultYear;
       });
       const newState = {
         news,
@@ -35,11 +38,11 @@ function App() {
 
   const serializeNews = (newsFromBackend) => {
     const serializedNews = [];
-    newsFromBackend.map((newInformation) => {
+    newsFromBackend.map((newObject) => {
       const tempNew = {
-        ...newInformation,
-        date: new Date(newInformation.date),
-        archiveDate: new Date(newInformation.archiveDate),
+        ...newObject,
+        date: new Date(newObject.date),
+        archiveDate: new Date(newObject.archiveDate),
       };
       serializedNews.push(tempNew);
     });

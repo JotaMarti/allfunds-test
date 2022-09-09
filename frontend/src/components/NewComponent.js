@@ -10,24 +10,29 @@ function newComponent({ newInformation, archiveNew, deleteNew, appState }) {
     return dateCreated;
   };
 
-  const { _id, author, date, title, content, description } = newInformation;
+  const { _id, author, date, title, content, description, archiveDate } = newInformation;
   const dateCreated = extractDate(date);
+  const dateArchived = extractDate(archiveDate);
 
   return (
-    <div className="New-component mb-3">
+    <div className="New-component mb-3 p-3">
       <Container>
         <Row>
           <Col>
-            <p>{author || "Missing Author"}</p>
+            <p>Author: {author || "Missing Author"}</p>
           </Col>
           <Col>
-            <p className="Date-created">{dateCreated || "Missing date"}</p>
+            <p className="Date">Date: {dateCreated || "Missing date"}</p>
           </Col>
         </Row>
         <Row>
           <Col>
             <h2>{title || "Missing title"}</h2>
           </Col>
+         {appState === "archive" ?  
+         <Col>
+            <p className="Date">Archived on: {dateArchived || "Missing date"}</p>
+          </Col> : null}
         </Row>
         <Row>
           <Col>

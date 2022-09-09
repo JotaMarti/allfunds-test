@@ -58,24 +58,36 @@ function App() {
       id: idNewToArchive,
       archiveDate: new Date(Date.now()),
     };
+    // This endpoint responds with status 200 if the archive is successful and 500 if not
     axios.put(BASE_URL + "/archive-new", payload).then((response) => {
-      getAllNews();
+      const responseStatus = response.status.valueOf();
+      if (responseStatus === 200) {
+        getAllNews();
+      }
+      if(responseStatus === 500 ) {
+        setArchiveNewError(true);
+      }
     }).catch(error => {
       setArchiveNewError(true);
     });
   };
 
   const deleteNew = (idNewToRemove) => {
-    axios.delete(BASE_URL + `/delete-new/${idNewToRemove}`).then((response) => {
-      const responseStatus = response.status.valueOf();
-      if (responseStatus === 200) {
-        removeNewFromState(idNewToRemove);
-      } else {
+    // This endpoint responds with status 200 if the delete process is successful and 404 if not
+    axios
+      .delete(BASE_URL + `/delete-new/${idNewToRemove}`)
+      .then((response) => {
+        const responseStatus = response.status.valueOf();
+        if (responseStatus === 200) {
+          removeNewFromState(idNewToRemove);
+        }
+        if(responseStatus === 404) {
+          setDeleteNewError(true);
+        }
+      })
+      .catch((error) => {
         setDeleteNewError(true);
-      }
-    }).catch(error => {
-      setDeleteNewError(true);
-    });
+      });
   };
 
   const removeNewFromState = (idNewToRemove) => {

@@ -27,7 +27,7 @@ app.listen(PORT, () => {
 app.get("/v1/get-all-news", async function (req, res) {
   const allNews = await getAllNews();
   res.setHeader("Content-Type", "application/json");
-  res.send(JSON.stringify(allNews));
+  res.status(200).send(JSON.stringify(allNews)); 
 });
 
 //Endpoint archive new

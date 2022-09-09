@@ -4,6 +4,7 @@ import { Alert, Button, Col, Container, Row } from "react-bootstrap";
 import NewComponent from "./components/NewComponent";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import AlertCustom from "./components/AlertCustom";
 
 const BASE_URL = "http://127.0.0.1:3050/v1";
 const archivedDateDefaultYear = 9000;
@@ -14,6 +15,8 @@ function App() {
   const [allNews, setAllNews] = useState(null);
   const [appState, setAppState] = useState("new");
   const [getAllNewsError, setGetAllNewsError] = useState(false)
+  const [archiveNewError, setArchiveNewError] = useState(false)
+  const [deleteNewError, setDeleteNewError] = useState(false)
 
   const getAllNews = () => {
     axios.get(BASE_URL + "/get-all-news").then((response) => {
@@ -50,26 +53,28 @@ function App() {
     return serializedNews;
   };
 
-  const archiveNew = (idNew) => {
+  const archiveNew = (idNewToArchive) => {
     const payload = {
-      id: idNew,
+      id: idNewToArchive,
       archiveDate: new Date(Date.now()),
     };
     axios.put(BASE_URL + "/archive-new", payload).then((response) => {
-      console.log("Archive Response", response);
       getAllNews();
+    }).catch(error => {
+      setArchiveNewError(true);
     });
   };
 
-  const deleteNew = (idNew) => {
-    axios.delete(BASE_URL + `/delete-new/${idNew}`).then((response) => {
+  const deleteNew = (idNewToRemove) => {
+    axios.delete(BASE_URL + `/delete-new/${idNewToRemove}`).then((response) => {
       const responseStatus = response.status.valueOf();
-      console.log("El status", typeof responseStatus);
       if (responseStatus === 200) {
-        removeNewFromState(idNew);
+        removeNewFromState(idNewToRemove);
       } else {
-        // Avisa al usuario del fallo
+        setDeleteNewError(true);
       }
+    }).catch(error => {
+      setDeleteNewError(true);
     });
   };
 
@@ -133,7 +138,9 @@ function App() {
                 ></NewComponent>
               );
             })}
-        {getAllNewsError && <Alert variant="danger">Can't connect to database</Alert>}
+        {getAllNewsError && <AlertCustom variant={"danger"} alertText={"Can't connect to database"}></AlertCustom>}
+        {archiveNewError && <AlertCustom variant={"danger"} alertText={"Error archiving the new"}></AlertCustom>}
+        {deleteNewError && <AlertCustom variant={"danger"} alertText={"Error deleting the new"}></AlertCustom>}
       </Container>
     </div>
   );

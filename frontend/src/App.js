@@ -3,7 +3,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import NewComponent from "./components/NewComponent";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import AlertCustom from "./components/AlertCustom";
 
 const { archivedDateDefaultYear } = require("./util/constants");

@@ -67,7 +67,7 @@ const getAllNews = async () => {
     });
     return allNews;
   } catch (error) {
-    console.log("Something went bad");
+    console.log("Something went bad getting al the news");
     return null;
   } finally {
     await mongoClient.close();
@@ -102,10 +102,7 @@ const deleteNew = async (id) => {
     const newsCollection = database.collection(collectionName);
     const query = { _id: ObjectId(id) };
     const result = await newsCollection.deleteOne(query);
-    if (result.deletedCount === 1) {
-      return true;
-    }
-    return false;
+    return result.deletedCount === 1;
   } catch (error) {
     console.log("Error deleting document");
   } finally {

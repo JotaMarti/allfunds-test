@@ -6,7 +6,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import AlertCustom from "./components/AlertCustom";
 
-const { GET_ALL_NEWS_URL, ARCHIVE_NEW_URL, DELETE_NEW_URL, headers, archivedDateDefaultYear } = require("./util/constants");
+const { archivedDateDefaultYear } = require("./util/constants");
+const { getAllNewsFromApi, archiveNewFromApi, deleteNewFromApi } = require("./api/news");
 
 function App() {
   // AllNews has this structure: {news: [], archivedNews: []}
@@ -20,72 +21,44 @@ function App() {
 
   // API CALLS
   const getAllNews = () => {
-    axios
-      .get(GET_ALL_NEWS_URL, headers)
-      .then((response) => {
-        const newsFromBackend = response.data;
-        const serializedNews = serializeNews(newsFromBackend);
-        let news = serializedNews.filter((newInformation) => {
-          const archivedDateYear = newInformation.archiveDate.getFullYear();
-          return archivedDateYear > archivedDateDefaultYear;
-        });
-        let archivedNews = serializedNews.filter((newInformation) => {
-          const archivedDateYear = newInformation.archiveDate.getFullYear();
-          return archivedDateYear < archivedDateDefaultYear;
-        });
-        news = shortNewsByDate(news, "news");
-        archivedNews = shortNewsByDate(archivedNews, "archivedNews");
-        const newState = {
-          news,
-          archivedNews,
-        };
-        setAllNews(newState);
-      })
-      .catch((error) => {
-        setGetAllNewsError(true);
+    getAllNewsFromApi().then((newsFromBackend) => {
+      const serializedNews = serializeNews(newsFromBackend);
+      let news = serializedNews.filter((newInformation) => {
+        const archivedDateYear = newInformation.archiveDate.getFullYear();
+        return archivedDateYear > archivedDateDefaultYear;
       });
+      let archivedNews = serializedNews.filter((newInformation) => {
+        const archivedDateYear = newInformation.archiveDate.getFullYear();
+        return archivedDateYear < archivedDateDefaultYear;
+      });
+      news = shortNewsByDate(news, "news");
+      archivedNews = shortNewsByDate(archivedNews, "archivedNews");
+      const newState = {
+        news,
+        archivedNews,
+      };
+      setAllNews(newState);
+    }).catch((error) => {
+      showInformation(setGetAllNewsError);
+    });
   };
 
   const archiveNew = (idNewToArchive) => {
-    const payload = {
-      id: idNewToArchive,
-      archiveDate: new Date(Date.now()),
-    };
-    // This endpoint responds with status 200 if the archive is successful and 500 if not
-    axios
-      .put(ARCHIVE_NEW_URL, payload, headers)
-      .then((response) => {
-        const responseStatus = response.status.valueOf();
-        if (responseStatus === 200) {
-          getAllNews();
-          showInformation(setArchivedSucces);
-        }
-        if (responseStatus === 500) {
-          showInformation(setArchiveNewError);
-        }
-      })
-      .catch((error) => {
-        showInformation(setArchiveNewError);
-      });
+    archiveNewFromApi(idNewToArchive).then((response) => {
+      getAllNews();
+      showInformation(setArchivedSucces);
+    }).catch((error) => {
+      showInformation(setArchiveNewError);
+    });
   };
 
   const deleteNew = (idNewToRemove) => {
-    // This endpoint responds with status 200 if the delete process is successful and 404 if not
-    axios
-      .delete(DELETE_NEW_URL + idNewToRemove, headers)
-      .then((response) => {
-        const responseStatus = response.status.valueOf();
-        if (responseStatus === 200) {
-          removeNewFromState(idNewToRemove);
-          showInformation(setDeleteSucces);
-        }
-        if (responseStatus === 404) {
-          showInformation(setDeleteNewError);
-        }
-      })
-      .catch((error) => {
-        showInformation(setDeleteNewError);
-      });
+    deleteNewFromApi(idNewToRemove).then((response) => {
+      removeNewFromState(idNewToRemove);
+      showInformation(setDeleteSucces);
+    }).catch((error) => {
+      showInformation(setDeleteNewError);
+    });
   };
 
   // Helper functions

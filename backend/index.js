@@ -18,7 +18,8 @@ const mongoClient = new MongoClient(mongoDbUri);
 app.use(bodyParser.json());
 app.use(cors());
 
-// To insert mock data for testing porpuses just remove the comment of the insertMockData function
+// This program insert automaticlly mock data in the database if it is empty
+// Using mongoDb driver 4.9 compatible with mongo version 3.6 till 6.0
 
 app.listen(PORT, () => {
   console.log(`Server running on port: ${PORT}`);
@@ -112,6 +113,29 @@ const deleteNew = async (id) => {
   }
 };
 
+const checkInitialValuesInDatabase = async () => {
+  const allNews = await getAllNews();
+  if (allNews) {
+    if (allNews.length === 0) {
+      console.log("Empty database, inserting mock data...");
+      await insertMockData();
+      const insertedNews = await getAllNews();
+      if (insertedNews) {
+        if (insertedNews.length > 0) {
+          console.log("Mock data inserted correctly");
+        }
+        if (insertedNews.length === 0) {
+          console.log("Error inserting mock data");
+        }
+      } else {
+        console.log("Error inserting mock data");
+      }
+    }
+  } else {
+    console.log("Error inserting mock data");
+  }
+};
+
 const insertMockData = async () => {
   try {
     await mongoClient.connect();
@@ -126,4 +150,4 @@ const insertMockData = async () => {
   }
 };
 
-//insertMockData();
+checkInitialValuesInDatabase();

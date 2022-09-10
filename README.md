@@ -1,10 +1,10 @@
-# Joan M. Marti Allfunds Test
+# **Joan M. Marti Allfunds Test**
 
 This is the Allfunds technical test for Joan M. Marti
 
 In this project we have the Backend and the Frontend.
 
-## Backend
+## **Backend**
 
 The backend consists on a nodeJs api rest server using express that is using MongoDb as database
 
@@ -16,11 +16,19 @@ To run the server just navigate to the backend folder and write:
 
 ### `node index.js`
 
-## Frontend
+## **Frontend**
 
 The frontend consists on web app using React and Bootstrap
 
 To run the app just navigate to the frontend folder and write:
 
 ### `npm start`
+
+### **Testing**
+
+I have done some basic testing in the react app, one test only pass with the default mock data.
+
+To use the test just navigate to the frontend folder and write:
+
+### `npm test`
 

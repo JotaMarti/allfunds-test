@@ -1,6 +1,6 @@
 # Joan M. Marti Allfunds Test
 
-This is the Allfunds technical test of Joan M. Marti
+This is the Allfunds technical test for Joan M. Marti
 
 In this project we have the Backend and the Frontend.
 

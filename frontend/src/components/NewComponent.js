@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Col, Container, Row, Fade } from "react-bootstrap";
 
-function newComponent({ newInformation, archiveNew, deleteNew, appState }) {
+function newComponent({ newObject, archiveNew, deleteNew, appState }) {
   const extractDate = (date) => {
     const day = date.getDate();
     const month = date.getMonth() + 1;
@@ -10,7 +10,7 @@ function newComponent({ newInformation, archiveNew, deleteNew, appState }) {
     return dateCreated;
   };
 
-  const { _id, author, date, title, content, description, archiveDate } = newInformation;
+  const { _id, author, date, title, content, description, archiveDate } = newObject;
   const dateCreated = extractDate(date);
   const dateArchived = extractDate(archiveDate);
 

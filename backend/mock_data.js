@@ -72,4 +72,20 @@ module.exports = [
     author: "JotaMarti",
     archiveDate: getRandomDate(),
   },
+  {
+    title: "New 9",
+    description: "This is the description of the new 9",
+    date: getRandomDate(),
+    content: "This is the content of the new 9",
+    author: "JotaMarti",
+    archiveDate: notArchivedDate,
+  },
+  {
+    title: "New 10",
+    description: "This is the description of the new 10",
+    date: getRandomDate(),
+    content: "This is the content of the new 10",
+    author: "JotaMarti",
+    archiveDate: getRandomDate(),
+  },
 ];

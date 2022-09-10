@@ -4,6 +4,7 @@ const mockData = require("./mock_data");
 const constants = require("./constants");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const API = require("./middleware/apikey");
 
 // Global constants
 const PORT = process.env.PORT || 3050;
@@ -24,17 +25,18 @@ app.listen(PORT, () => {
 });
 
 // Endpoint get all news
-app.get("/v1/get-all-news", async function (req, res) {
+app.get("/v1/get-all-news", API.validateKey, async function (req, res) {
   const allNews = await getAllNews();
-  res.setHeader("Content-Type", "application/json");
-  res.status(200).send(JSON.stringify(allNews)); 
+  if (allNews) {
+    res.status(200).send(JSON.stringify(allNews));
+  }
+  res.status(500).send();
 });
 
 //Endpoint archive new
-app.put("/v1/archive-new", async function (req, res) {
-  console.log(req.body);
+app.put("/v1/archive-new", API.validateKey, async function (req, res) {
   const id = req.body.id;
-  const date = req.body.date;
+  const date = req.body.archiveDate;
   const updateResult = await archiveNew(id, date);
   if (updateResult) {
     res.status(200).send();
@@ -43,7 +45,7 @@ app.put("/v1/archive-new", async function (req, res) {
 });
 
 //Endpoint Delete new
-app.delete("/v1/delete-new/:id", async function (req, res) {
+app.delete("/v1/delete-new/:id", API.validateKey, async function (req, res) {
   const { id } = req.params;
   const deleteResult = await deleteNew(id);
   if (deleteResult) {
@@ -65,6 +67,7 @@ const getAllNews = async () => {
     return allNews;
   } catch (error) {
     console.log("Something went bad");
+    return null;
   } finally {
     await mongoClient.close();
   }
@@ -76,9 +79,10 @@ const archiveNew = async (id, date) => {
     const database = mongoClient.db(databaseName);
     const newsCollection = database.collection(collectionName);
     const query = { _id: ObjectId(id) };
+    const archiveDate = new Date(date);
     const updateDocument = {
       $set: {
-        archiveDate: new Date(2022, 1, 2, 3, 4),
+        archiveDate,
       },
     };
     const result = await newsCollection.updateOne(query, updateDocument);

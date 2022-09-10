@@ -3,9 +3,9 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 
 function newComponent({ newInformation, archiveNew, deleteNew, appState }) {
   const extractDate = (date) => {
-    const day = date.getDay().toString();
-    const month = date.getDay().toString();
-    const year = date.getFullYear().toString();
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
     const dateCreated = `${day}-${month}-${year}`;
     return dateCreated;
   };

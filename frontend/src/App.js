@@ -1,13 +1,13 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Alert, Button, Col, Container, Row } from "react-bootstrap";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import NewComponent from "./components/NewComponent";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import AlertCustom from "./components/AlertCustom";
 
-const BASE_URL = "http://127.0.0.1:3050/v1";
-const archivedDateDefaultYear = 9000;
+
+const { GET_ALL_NEWS_URL, ARCHIVE_NEW_URL, DELETE_NEW_URL, headers, archivedDateDefaultYear } = require("./util/constants");
 
 function App() {
 
@@ -19,27 +19,46 @@ function App() {
   const [deleteNewError, setDeleteNewError] = useState(false)
 
   const getAllNews = () => {
-    axios.get(BASE_URL + "/get-all-news").then((response) => {
-      const newsFromBackend = response.data;
-      const serializedNews = serializeNews(newsFromBackend);
-      const news = serializedNews.filter((newInformation) => {
-        const archivedDateYear = newInformation.archiveDate.getFullYear();
-        return archivedDateYear > archivedDateDefaultYear;
+    axios
+      .get(GET_ALL_NEWS_URL, headers)
+      .then((response) => {
+        const newsFromBackend = response.data;
+        const serializedNews = serializeNews(newsFromBackend);
+        let news = serializedNews.filter((newInformation) => {
+          const archivedDateYear = newInformation.archiveDate.getFullYear();
+          return archivedDateYear > archivedDateDefaultYear;
+        });
+        let archivedNews = serializedNews.filter((newInformation) => {
+          const archivedDateYear = newInformation.archiveDate.getFullYear();
+          return archivedDateYear < archivedDateDefaultYear;
+        });
+        news = shortNewsByDate(news, "news");
+        archivedNews = shortNewsByDate(archivedNews, "archivedNews");
+        const newState = {
+          news,
+          archivedNews,
+        };
+        setAllNews(newState);
+      })
+      .catch((error) => {
+        setGetAllNewsError(true);
       });
-      const archivedNews = serializedNews.filter((newInformation) => {
-        const archivedDateYear = newInformation.archiveDate.getFullYear();
-        return archivedDateYear < archivedDateDefaultYear;
-      });
-      const newState = {
-        news,
-        archivedNews
-      };
-      setAllNews(newState);
-    }).catch(error => {
-      setGetAllNewsError(true);
-    }
-    );
   };
+
+  const shortNewsByDate = (newsArray, newsArrayType) => {
+    let sortedNewsArray;
+    if(newsArrayType === "news") {
+      sortedNewsArray = newsArray.sort((a, b) => {
+        return b.date - a.date;
+      });
+    }
+    if (newsArrayType === "archivedNews") {
+      sortedNewsArray = newsArray.sort((a, b) => {
+        return b.archiveDate - a.archiveDate;
+      });
+    }
+    return sortedNewsArray
+  }
 
   const serializeNews = (newsFromBackend) => {
     const serializedNews = newsFromBackend.map((newObject) => {
@@ -48,6 +67,7 @@ function App() {
         date: new Date(newObject.date),
         archiveDate: new Date(newObject.archiveDate),
       };
+      console.log(tempNew.archiveDate)
       return tempNew;
     });
     return serializedNews;
@@ -59,29 +79,32 @@ function App() {
       archiveDate: new Date(Date.now()),
     };
     // This endpoint responds with status 200 if the archive is successful and 500 if not
-    axios.put(BASE_URL + "/archive-new", payload).then((response) => {
-      const responseStatus = response.status.valueOf();
-      if (responseStatus === 200) {
-        getAllNews();
-      }
-      if(responseStatus === 500 ) {
+    axios
+      .put(ARCHIVE_NEW_URL, payload, headers)
+      .then((response) => {
+        const responseStatus = response.status.valueOf();
+        if (responseStatus === 200) {
+          getAllNews();
+        }
+        if (responseStatus === 500) {
+          setArchiveNewError(true);
+        }
+      })
+      .catch((error) => {
         setArchiveNewError(true);
-      }
-    }).catch(error => {
-      setArchiveNewError(true);
-    });
+      });
   };
 
   const deleteNew = (idNewToRemove) => {
     // This endpoint responds with status 200 if the delete process is successful and 404 if not
     axios
-      .delete(BASE_URL + `/delete-new/${idNewToRemove}`)
+      .delete(DELETE_NEW_URL + idNewToRemove, headers)
       .then((response) => {
         const responseStatus = response.status.valueOf();
         if (responseStatus === 200) {
           removeNewFromState(idNewToRemove);
         }
-        if(responseStatus === 404) {
+        if (responseStatus === 404) {
           setDeleteNewError(true);
         }
       })

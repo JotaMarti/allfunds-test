@@ -29,10 +29,11 @@ function newComponent({ newInformation, archiveNew, deleteNew, appState }) {
           <Col>
             <h2>{title || "Missing title"}</h2>
           </Col>
-         {appState === "archive" ?  
-         <Col>
-            <p className="Date">Archived on: {dateArchived || "Missing date"}</p>
-          </Col> : null}
+          {appState === "archive" ? (
+            <Col>
+              <p className="Date">Archived on: {dateArchived || "Missing date"}</p>
+            </Col>
+          ) : null}
         </Row>
         <Row>
           <Col>
@@ -49,7 +50,7 @@ function newComponent({ newInformation, archiveNew, deleteNew, appState }) {
                 ARCHIVE
               </Button>
             ) : (
-              <Button className="float-end" onClick={() => deleteNew(_id)}>
+              <Button variant="danger" className="float-end" onClick={() => deleteNew(_id)}>
                 REMOVE
               </Button>
             )}

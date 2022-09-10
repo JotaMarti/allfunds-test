@@ -96,7 +96,6 @@ function App() {
         date: new Date(newObject.date),
         archiveDate: new Date(newObject.archiveDate),
       };
-      console.log(tempNew.archiveDate);
       return tempNew;
     });
     return serializedNews;
@@ -136,9 +135,7 @@ function App() {
   };
 
   useEffect(() => {
-    return () => {
-      getAllNews();
-    };
+    getAllNews();
   }, []);
 
   return (
@@ -163,12 +160,32 @@ function App() {
         </Row>
         {appState === "new"
           ? allNews &&
-            allNews.news.map((newObject) => {
-              return <NewComponent key={newObject._id} newObject={newObject} archiveNew={archiveNew} deleteNew={deleteNew} appState={appState}></NewComponent>;
+            allNews.news.map((newObject, index) => {
+              const id = `normal-new-${index}`;
+              return (
+                <NewComponent
+                  testId={id}
+                  key={newObject._id}
+                  newObject={newObject}
+                  archiveNew={archiveNew}
+                  deleteNew={deleteNew}
+                  appState={appState}
+                ></NewComponent>
+              );
             })
           : allNews &&
-            allNews.archivedNews.map((newObject) => {
-              return <NewComponent key={newObject._id} newObject={newObject} archiveNew={archiveNew} deleteNew={deleteNew} appState={appState}></NewComponent>;
+            allNews.archivedNews.map((newObject, index) => {
+              const id = `archived-new-${index}`;
+              return (
+                <NewComponent
+                  testId={id}
+                  key={newObject._id}
+                  newObject={newObject}
+                  archiveNew={archiveNew}
+                  deleteNew={deleteNew}
+                  appState={appState}
+                ></NewComponent>
+              );
             })}
         {getAllNewsError && <AlertCustom variant={"danger"} alertText={"Can't connect to database"}></AlertCustom>}
         {archiveNewError && <AlertCustom variant={"danger"} alertText={"Error archiving the new"}></AlertCustom>}

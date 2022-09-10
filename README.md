@@ -26,7 +26,7 @@ To run the app just navigate to the frontend folder and write:
 
 ### **Testing**
 
-I have done some basic testing in the react app, one test only pass with the default mock data.
+I have done some basic testing in the react app.
 
 To use the test just navigate to the frontend folder and write:
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Col, Container, Row, Fade } from "react-bootstrap";
 
-function newComponent({ newObject, archiveNew, deleteNew, appState }) {
+function newComponent({ newObject, archiveNew, deleteNew, appState, testId }) {
   const extractDate = (date) => {
     const day = date.getDate();
     const month = date.getMonth() + 1;
@@ -16,7 +16,7 @@ function newComponent({ newObject, archiveNew, deleteNew, appState }) {
 
   return (
     <Fade in={true} appear={true}>
-      <div className="New-component mb-3 p-3">
+      <div className="New-component mb-3 p-3" data-testid={testId}>
         <Container>
           <Row>
             <Col>

@@ -1,5 +1,4 @@
-import { render, screen, waitFor, shallow, Mount } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import App from './App';
 
 describe('Allfunds news APP', () => {
@@ -10,13 +9,19 @@ describe('Allfunds news APP', () => {
     expect(archivedButton).toBeInTheDocument();
   })
 
-  it("Should show archived new when archive button is pressed (This only works with default data)", async () => {
+  it("Should render the app and display the normal news)", async () => {
+    render(<App />);
+    await waitFor(() => {
+      expect(screen.getByTestId("normal-new-1")).toBeInTheDocument()
+    })
+  })
+
+  it("Should render the app and display the archived news)", async () => {
     render(<App />);
     const archivedButton = screen.getByText(/ARCHIVED/i);
-    userEvent.click(archivedButton)
-    setTimeout(function () {
-      const archiveNew = screen.getAllByText(/Archived on: 11-2-2010/i);
-      expect(archiveNew).toBeInTheDocument();
-    }, 500);
+    fireEvent.click(archivedButton)
+    await waitFor(() => {
+      expect(screen.getByTestId("archived-new-1")).toBeInTheDocument()
+    });
   })
 });

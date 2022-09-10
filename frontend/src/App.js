@@ -1,17 +1,17 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Button, Col, Container, Row } from "react-bootstrap";
-import NewComponent from "./components/NewComponent";
 import { useEffect, useState } from "react";
+import NewComponent from "./components/NewComponent";
 import AlertCustom from "./components/AlertCustom";
+import { Button, Col, Container, Row } from "react-bootstrap";
 
-const { archivedDateDefaultYear } = require("./util/constants");
+const { archivedDateDefaultYear, APP_TITLE, TYPE_NEW, TYPE_ARCHIVED } = require("./util/constants");
 const { getAllNewsFromApi, archiveNewFromApi, deleteNewFromApi } = require("./api/news");
 
 function App() {
   // AllNews has this structure: {news: [], archivedNews: []}
   const [allNews, setAllNews] = useState(null);
-  const [appState, setAppState] = useState("new");
+  const [appState, setAppState] = useState(TYPE_NEW);
   const [getAllNewsError, setGetAllNewsError] = useState(false);
   const [archiveNewError, setArchiveNewError] = useState(false);
   const [deleteNewError, setDeleteNewError] = useState(false);
@@ -20,44 +20,54 @@ function App() {
 
   // API CALLS
   const getAllNews = () => {
-    getAllNewsFromApi().then((newsFromBackend) => {
-      const serializedNews = serializeNews(newsFromBackend);
-      let news = serializedNews.filter((newInformation) => {
-        const archivedDateYear = newInformation.archiveDate.getFullYear();
-        return archivedDateYear > archivedDateDefaultYear;
+    getAllNewsFromApi()
+      .then((newsFromBackend) => {
+        const serializedNews = serializeNews(newsFromBackend);
+
+        let news = serializedNews.filter((newInformation) => {
+          const archivedDateYear = newInformation.archiveDate.getFullYear();
+          return archivedDateYear > archivedDateDefaultYear;
+        });
+
+        let archivedNews = serializedNews.filter((newInformation) => {
+          const archivedDateYear = newInformation.archiveDate.getFullYear();
+          return archivedDateYear < archivedDateDefaultYear;
+        });
+
+        news = shortNewsByDate(news, TYPE_NEW);
+        archivedNews = shortNewsByDate(archivedNews, TYPE_ARCHIVED);
+
+        const newState = {
+          news,
+          archivedNews,
+        };
+        setAllNews(newState);
+      })
+      .catch((error) => {
+        showInformation(setGetAllNewsError);
       });
-      let archivedNews = serializedNews.filter((newInformation) => {
-        const archivedDateYear = newInformation.archiveDate.getFullYear();
-        return archivedDateYear < archivedDateDefaultYear;
-      });
-      news = shortNewsByDate(news, "news");
-      archivedNews = shortNewsByDate(archivedNews, "archivedNews");
-      const newState = {
-        news,
-        archivedNews,
-      };
-      setAllNews(newState);
-    }).catch((error) => {
-      showInformation(setGetAllNewsError);
-    });
   };
 
   const archiveNew = (idNewToArchive) => {
-    archiveNewFromApi(idNewToArchive).then((response) => {
-      getAllNews();
-      showInformation(setArchivedSucces);
-    }).catch((error) => {
-      showInformation(setArchiveNewError);
-    });
+    archiveNewFromApi(idNewToArchive)
+      .then((response) => {
+        getAllNews();
+        showInformation(setArchivedSucces);
+      })
+      .catch((error) => {
+        showInformation(setArchiveNewError);
+      });
   };
 
   const deleteNew = (idNewToRemove) => {
-    deleteNewFromApi(idNewToRemove).then((response) => {
-      removeNewFromState(idNewToRemove);
-      showInformation(setDeleteSucces);
-    }).catch((error) => {
-      showInformation(setDeleteNewError);
-    });
+    deleteNewFromApi(idNewToRemove)
+      .then((response) => {
+        removeNewFromState(idNewToRemove);
+        showInformation(setDeleteSucces);
+      })
+      .catch((error) => {
+        showInformation(setDeleteNewError);
+      });
   };
 
   // Helper functions
@@ -75,12 +85,12 @@ function App() {
 
   const shortNewsByDate = (newsArray, newsArrayType) => {
     let sortedNewsArray;
-    if (newsArrayType === "news") {
+    if (newsArrayType === TYPE_NEW) {
       sortedNewsArray = newsArray.sort((a, b) => {
         return b.date - a.date;
       });
     }
-    if (newsArrayType === "archivedNews") {
+    if (newsArrayType === TYPE_ARCHIVED) {
       sortedNewsArray = newsArray.sort((a, b) => {
         return b.archiveDate - a.archiveDate;
       });
@@ -115,22 +125,22 @@ function App() {
       <Container>
         <Row className="mb-3">
           <Col>
-            <h1 className="text-center">Allfunds News</h1>
+            <h1 className="text-center">{APP_TITLE}</h1>
           </Col>
         </Row>
         <Row className="mb-3">
           <Col>
-            <Button variant={appState === "new" ? "primary" : "secondary"} className="w-25 float-end" onClick={() => setAppState("new")}>
+            <Button variant={appState === TYPE_NEW ? "primary" : "secondary"} className="w-25 float-end" onClick={() => setAppState(TYPE_NEW)}>
               NEWS
             </Button>
           </Col>
           <Col>
-            <Button variant={appState !== "new" ? "primary" : "secondary"} className="w-25" onClick={() => setAppState("archive")}>
+            <Button variant={appState !== TYPE_NEW ? "primary" : "secondary"} className="w-25" onClick={() => setAppState(TYPE_ARCHIVED)}>
               ARCHIVED
             </Button>
           </Col>
         </Row>
-        {appState === "new"
+        {appState === TYPE_NEW
           ? allNews &&
             allNews.news.map((newObject, index) => {
               const id = `normal-new-${index}`;

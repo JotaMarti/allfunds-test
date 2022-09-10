@@ -1,4 +1,5 @@
 import axios from "axios";
+
 const { GET_ALL_NEWS_URL, ARCHIVE_NEW_URL, DELETE_NEW_URL, headers } = require("../util/constants");
 
 const getAllNewsFromApi = async () => {
@@ -37,4 +38,5 @@ const deleteNewFromApi = async (idNewToRemove) => {
   });
 };
 
+// Exports
 export { getAllNewsFromApi, archiveNewFromApi, deleteNewFromApi };

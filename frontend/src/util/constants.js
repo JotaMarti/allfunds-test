@@ -15,9 +15,18 @@ const headers = {
 const archivedDateDefaultYear = 9000;
 
 
+// Text
+const APP_TITLE = "Allfunds News";
+const TYPE_NEW = "news"
+const TYPE_ARCHIVED = "archivedNews";
+
+
 // Exports
 exports.GET_ALL_NEWS_URL = GET_ALL_NEWS_URL
 exports.ARCHIVE_NEW_URL = ARCHIVE_NEW_URL
 exports.DELETE_NEW_URL = DELETE_NEW_URL
 exports.headers = headers
 exports.archivedDateDefaultYear = archivedDateDefaultYear;
+exports.APP_TITLE = APP_TITLE;
+exports.TYPE_NEW = TYPE_NEW;
+exports.TYPE_ARCHIVED = TYPE_ARCHIVED;

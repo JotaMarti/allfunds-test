@@ -1,5 +1,16 @@
+:root {
+  --allfunds-light-blue: #242c4c;
+  --allfunds-dark-blue: hsl(230, 49%, 12%);
+  --allfunds-red: #d50032;
+  --allfunds-gray: #ebecf0;
+}
+
 * {
   box-sizing: border-box;
+}
+
+html {
+  background-color: var(--allfunds-gray);
 }
 
 body {
@@ -10,6 +21,6 @@ body {
 }
 
 #root {
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
 }

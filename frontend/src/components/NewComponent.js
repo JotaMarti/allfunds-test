@@ -50,7 +50,7 @@ function newComponent({ newInformation, archiveNew, deleteNew, appState }) {
               </Button>
             ) : (
               <Button className="float-end" onClick={() => deleteNew(_id)}>
-                DELETE
+                REMOVE
               </Button>
             )}
           </Col>

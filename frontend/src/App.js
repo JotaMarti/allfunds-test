@@ -140,12 +140,14 @@ function App() {
         </Row>
         <Row className="mb-3">
           <Col>
-            <Button className="float-end" onClick={() => setAppState("new")}>
+            <Button variant={appState === "new" ? "primary" : "secondary"} className="float-end" onClick={() => setAppState("new")}>
               NEWS
             </Button>
           </Col>
           <Col>
-            <Button onClick={() => setAppState("archive")}>ARCHIVED</Button>
+            <Button variant={appState !== "new" ? "primary" : "secondary"}  onClick={() => setAppState("archive")}>
+              ARCHIVED
+            </Button>
           </Col>
         </Row>
         {appState === "new"

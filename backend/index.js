@@ -145,8 +145,9 @@ const insertMockData = async () => {
     const result = await newsCollection.insertMany(mockData, options);
     console.log(`${result.insertedCount} documents were inserted`);
   } catch (error) {
-    console.log("Error");
+    console.log("Error inserting mock data");
   } finally {
+    await mongoClient.close();
   }
 };
 

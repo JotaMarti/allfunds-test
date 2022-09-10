@@ -6,17 +6,15 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import AlertCustom from "./components/AlertCustom";
 
-
 const { GET_ALL_NEWS_URL, ARCHIVE_NEW_URL, DELETE_NEW_URL, headers, archivedDateDefaultYear } = require("./util/constants");
 
 function App() {
-
   // AllNews has this structure: {news: [], archivedNews: []}
   const [allNews, setAllNews] = useState(null);
   const [appState, setAppState] = useState("new");
-  const [getAllNewsError, setGetAllNewsError] = useState(false)
-  const [archiveNewError, setArchiveNewError] = useState(false)
-  const [deleteNewError, setDeleteNewError] = useState(false)
+  const [getAllNewsError, setGetAllNewsError] = useState(false);
+  const [archiveNewError, setArchiveNewError] = useState(false);
+  const [deleteNewError, setDeleteNewError] = useState(false);
 
   const getAllNews = () => {
     axios
@@ -47,7 +45,7 @@ function App() {
 
   const shortNewsByDate = (newsArray, newsArrayType) => {
     let sortedNewsArray;
-    if(newsArrayType === "news") {
+    if (newsArrayType === "news") {
       sortedNewsArray = newsArray.sort((a, b) => {
         return b.date - a.date;
       });
@@ -57,8 +55,8 @@ function App() {
         return b.archiveDate - a.archiveDate;
       });
     }
-    return sortedNewsArray
-  }
+    return sortedNewsArray;
+  };
 
   const serializeNews = (newsFromBackend) => {
     const serializedNews = newsFromBackend.map((newObject) => {
@@ -67,7 +65,7 @@ function App() {
         date: new Date(newObject.date),
         archiveDate: new Date(newObject.archiveDate),
       };
-      console.log(tempNew.archiveDate)
+      console.log(tempNew.archiveDate);
       return tempNew;
     });
     return serializedNews;
@@ -145,7 +143,7 @@ function App() {
             </Button>
           </Col>
           <Col>
-            <Button variant={appState !== "new" ? "primary" : "secondary"}  onClick={() => setAppState("archive")}>
+            <Button variant={appState !== "new" ? "primary" : "secondary"} onClick={() => setAppState("archive")}>
               ARCHIVED
             </Button>
           </Col>
@@ -154,25 +152,25 @@ function App() {
           ? allNews &&
             allNews.news.map((newInformation) => {
               return (
-                <NewComponent
-                  key={newInformation._id}
-                  newInformation={newInformation}
-                  archiveNew={archiveNew}
-                  deleteNew={deleteNew}
-                  appState={appState}
-                ></NewComponent>
+                  <NewComponent
+                    key={newInformation._id}
+                    newInformation={newInformation}
+                    archiveNew={archiveNew}
+                    deleteNew={deleteNew}
+                    appState={appState}
+                  ></NewComponent>
               );
             })
           : allNews &&
             allNews.archivedNews.map((newInformation) => {
               return (
-                <NewComponent
-                  key={newInformation._id}
-                  newInformation={newInformation}
-                  archiveNew={archiveNew}
-                  deleteNew={deleteNew}
-                  appState={appState}
-                ></NewComponent>
+                  <NewComponent
+                    key={newInformation._id}
+                    newInformation={newInformation}
+                    archiveNew={archiveNew}
+                    deleteNew={deleteNew}
+                    appState={appState}
+                  ></NewComponent>
               );
             })}
         {getAllNewsError && <AlertCustom variant={"danger"} alertText={"Can't connect to database"}></AlertCustom>}

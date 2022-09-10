@@ -1,8 +1,7 @@
-import React from 'react'
+import React from "react";
 import { Alert, Container } from "react-bootstrap";
 
-function AlertCustom({variant, alertText}) {
-    console.log("Test",React.Children)
+function AlertCustom({ variant, alertText }) {
   return (
     <Container className="d-flex justify-content-center position-fixed fixed-bottom">
       <Alert className="w-75" variant={variant}>
@@ -12,4 +11,4 @@ function AlertCustom({variant, alertText}) {
   );
 }
 
-export default AlertCustom
+export default AlertCustom;

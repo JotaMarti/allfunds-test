@@ -2,17 +2,18 @@
   --allfunds-light-blue: #242c4c;
   --allfunds-dark-blue: hsl(230, 49%, 12%);
   --allfunds-red: #d50032;
+  --allfunds-gray: #ebecf0;
 }
 
 .App {
   height: 100vh;
   width: 100vw;
+  background-color: var(--allfunds-gray);
 }
 
 .New-component {
-  color: white;
-  background-image: linear-gradient(var(--allfunds-light-blue), var(--allfunds-dark-blue));
-  border: #242c4c 1px solid;
+  background-color: white;
+  border: #fff 1px solid;
   border-radius: 10px;
 }
 

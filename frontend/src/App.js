@@ -130,12 +130,12 @@ function App() {
         </Row>
         <Row className="mb-3">
           <Col>
-            <Button variant={appState === TYPE_NEW ? "primary" : "secondary"} className="w-25 float-end" onClick={() => setAppState(TYPE_NEW)}>
+            <Button variant={appState === TYPE_NEW ? "primary" : "secondary"} className="Main-button float-end" onClick={() => setAppState(TYPE_NEW)}>
               NEWS
             </Button>
           </Col>
           <Col>
-            <Button variant={appState !== TYPE_NEW ? "primary" : "secondary"} className="w-25" onClick={() => setAppState(TYPE_ARCHIVED)}>
+            <Button variant={appState !== TYPE_NEW ? "primary" : "secondary"} className="Main-button" onClick={() => setAppState(TYPE_ARCHIVED)}>
               ARCHIVED
             </Button>
           </Col>

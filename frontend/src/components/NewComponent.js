@@ -1,6 +1,8 @@
 import React from "react";
 import { Button, Col, Container, Row, Fade } from "react-bootstrap";
 
+const {TYPE_NEW, TYPE_ARCHIVED } = require("../util/constants");
+
 function newComponent({ newObject, archiveNew, deleteNew, appState, testId }) {
   const extractDate = (date) => {
     const day = date.getDate();
@@ -30,7 +32,7 @@ function newComponent({ newObject, archiveNew, deleteNew, appState, testId }) {
             <Col>
               <h2>{title || "Missing title"}</h2>
             </Col>
-            {appState === "archive" ? (
+            {appState === TYPE_ARCHIVED ? (
               <Col>
                 <p className="Date">Archived on: {dateArchived || "Missing date"}</p>
               </Col>
@@ -46,7 +48,7 @@ function newComponent({ newObject, archiveNew, deleteNew, appState, testId }) {
               <p>{content || "Content"}</p>
             </Col>
             <Col>
-              {appState === "new" ? (
+              {appState === TYPE_NEW ? (
                 <Button className="float-end" onClick={() => archiveNew(_id)}>
                   ARCHIVE
                 </Button>

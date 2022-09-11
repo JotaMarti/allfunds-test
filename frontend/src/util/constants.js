@@ -1,5 +1,5 @@
 // Endpoints
-const BASE_URL = "http://127.0.0.1:3050/v1";
+const BASE_URL = "https://allfunds-test-backend.herokuapp.com/v1";
 const GET_ALL_NEWS_URL = BASE_URL + "/get-all-news";
 const ARCHIVE_NEW_URL = BASE_URL + "/archive-new";
 const DELETE_NEW_URL = BASE_URL + "/delete-new/";
